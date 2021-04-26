@@ -4,6 +4,7 @@ import com.yahoo.sdvornik.generated.{HelloRequestScala, WsdlClient}
 
 import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration._
+import scala.util.{Failure, Success}
 
 object AppScala extends App {
 
@@ -13,6 +14,13 @@ object AppScala extends App {
 
   val f = client.sayHello(HelloRequestScala("John Doe"))
 
-  println(Await.result(f, 1.second))
+  f.onComplete {
+    case Success(value) => println(s"Response $value")
+    case Failure(e) =>
+      println("**********************************")
+      e.printStackTrace()
+  }
+
+  Thread.sleep(2000)
 
 }
